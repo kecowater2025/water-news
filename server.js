@@ -97,7 +97,6 @@ app.get("/api/news", async (req, res) => {
   try {
     const days = Math.max(1, Math.min(30, Number(req.query.days) || 7));
     const query = String(req.query.query || "");
-
     const articles = await getWaterNews(days, query);
 
     res.json({
@@ -109,6 +108,8 @@ app.get("/api/news", async (req, res) => {
       articles
     });
   } catch (error) {
+    console.error("API error:", error);
+
     res.status(500).json({
       ok: false,
       message: "뉴스를 불러오지 못했습니다.",
@@ -117,10 +118,14 @@ app.get("/api/news", async (req, res) => {
   }
 });
 
+app.get("/health", (req, res) => {
+  res.json({ ok: true, message: "running" });
+});
+
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
 app.listen(PORT, () => {
-  console.log(`서버 실행 중: http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

@@ -1,8 +1,13 @@
 {
   "name": "water-news",
   "version": "1.0.0",
+  "description": "최근 7일 물 관련 뉴스 검색 웹페이지",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "rss-parser": "^3.13.0"
   }
 }
