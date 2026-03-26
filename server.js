@@ -4,7 +4,7 @@ const path = require("path");
 
 const app = express();
 const parser = new Parser();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 const WATER_KEYWORDS = [
   "물", "수질", "하천", "상수도", "하수도", "댐", "홍수", "가뭄",
