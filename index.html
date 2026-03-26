@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>물 관련 뉴스 검색</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, "Noto Sans KR", sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+    }
+    .wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    .hero {
+      background: linear-gradient(135deg, #059669, #0f766e);
+      color: white;
+      padding: 32px;
+      border-radius: 28px;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16);
+    }
+    .hero h1 {
+      margin: 0 0 12px;
+      font-size: 34px;
+    }
+    .hero p {
+      margin: 0;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.92);
+    }
+    .card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+      margin-top: 20px;
+    }
+    .title {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 16px;
+    }
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 200px 150px;
+      gap: 16px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 16px;
+      font-size: 15px;
+    }
+    input, select {
+      border: 1px solid #cbd5e1;
+    }
+    button {
+      border: none;
+      background: #0f172a;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 24px;
+    }
+    .meta {
+      margin-top: 14px;
+      color: #64748b;
+      font-size: 14px;
+    }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .chip {
+      border: 1px solid #cbd5e1;
+      background: white;
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .chip.active {
+      background: #059669;
+      color: white;
+      border-color: #059669;
+    }
+    .list {
+      display: grid;
+      gap: 14px;
+      margin-top: 20px;
+    }
+    .article {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 24px;
+      padding: 20px;
+    }
+    .article-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .tag {
+      font-size: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      display: inline-block;
+    }
+    .tag.category {
+      background: #ecfdf5;
+      color: #047857;
+    }
+    .tag.source {
+      background: #f1f5f9;
+      color: #475569;
+    }
+    .article h3 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.5;
+    }
+    .article p {
+      margin: 10px 0 0;
+      color: #475569;
+      line-height: 1.7;
+    }
+    .side {
+      min-width: 190px;
+      text-align: right;
+    }
+    .link {
+      display: inline-block;
+      margin-top: 12px;
+      text-decoration: none;
+      background: #0f172a;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .warning {
+      margin-top: 16px;
+      border: 1px solid #fecaca;
+      background: #fef2f2;
+      color: #991b1b;
+      border-radius: 18px;
+      padding: 14px 16px;
+      display: none;
+    }
+    .empty {
+      text-align: center;
+      padding: 50px 20px;
+      color: #64748b;
+      border: 1px dashed #cbd5e1;
+      border-radius: 24px;
+      background: white;
+      margin-top: 20px;
+    }
+    @media (max-width: 960px) {
+      .controls {
+        grid-template-columns: 1fr;
+      }
+      .hero h1 {
+        font-size: 28px;
+      }
+      .side {
+        text-align: left;
+        min-width: auto;
+      }
+      button {
+        margin-top: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>최근 일주일 물 관련 기사 검색 웹페이지</h1>
+      <p>
+        검색 버튼을 누르면 최근 7일 안에 나온 물 관련 뉴스만 보여줍니다.
+      </p>
+    </section>
+
+    <section class="card">
+      <div class="title">검색 조건</div>
+
+      <div class="controls">
+        <div>
+          <label for="query">검색어</label>
+          <input id="query" value="물 OR 수질 OR 하천 OR 상수도 OR 하수도 OR 홍수 OR 가뭄" />
+        </div>
+
+        <div>
+          <label for="days">기간</label>
+          <select id="days">
+            <option value="3">최근 3일</option>
+            <option value="7" selected>최근 7일</option>
+            <option value="14">최근 14일</option>
+            <option value="30">최근 30일</option>
+          </select>
+        </div>
+
+        <div>
+          <button id="searchButton">검색 버튼</button>
+        </div>
+      </div>
+
+      <div class="chips" id="chips"></div>
+      <div class="warning" id="warning"></div>
+      <div class="meta" id="meta">버튼을 누르면 결과를 불러옵니다.</div>
+    </section>
+
+    <section class="list" id="list"></section>
+  </div>
+
+  <script>
+    const state = {
+      articles: [],
+      selectedCategory: "전체",
+      fetchedAt: null,
+      days: 7,
+      query: document.getElementById("query").value
+    };
+
+    function isWithinDays(dateString, days = 7) {
+      const date = new Date(dateString);
+      if (Number.isNaN(date.getTime())) return false;
+
+      const now = new Date();
+      const diff = now.getTime() - date.getTime();
+
+      return diff >= 0 && diff <= days * 24 * 60 * 60 * 1000;
+    }
+
+    function categories() {
+      return ["전체", ...new Set(state.articles.map((article) => article.category))];
+    }
+
+    function filteredArticles() {
+      return state.articles.filter((article) => {
+        const byCategory =
+          state.selectedCategory === "전체" || article.category === state.selectedCategory;
+        const byDate = isWithinDays(article.pubDate, state.days);
+        return byCategory && byDate;
+      });
+    }
+
+    function renderChips() {
+      const chips = document.getElementById("chips");
+      chips.innerHTML = "";
+
+      categories().forEach((category) => {
+        const button = document.createElement("button");
+        button.className = `chip ${state.selectedCategory === category ? "active" : ""}`;
+        button.textContent = category;
+        button.onclick = () => {
+          state.selectedCategory = category;
+          render();
+        };
+        chips.appendChild(button);
+      });
+    }
+
+    function renderList() {
+      const list = document.getElementById("list");
+      const articles = filteredArticles();
+      list.innerHTML = "";
+
+      if (articles.length === 0) {
+        list.innerHTML = '<div class="empty">조건에 맞는 기사가 없습니다.</div>';
+        return articles;
+      }
+
+      articles.forEach((article) => {
+        const el = document.createElement("article");
+        el.className = "article";
+        el.innerHTML = `
+          <div class="article-top">
+            <div style="flex:1; min-width: 0;">
+              <div class="tags">
+                <span class="tag category">${article.category}</span>
+                <span class="tag source">${article.source}</span>
+              </div>
+              <h3>${article.title}</h3>
+              <p>${article.description || "설명이 없는 기사입니다."}</p>
+            </div>
+            <div class="side">
+              <div>${new Date(article.pubDate).toLocaleString("ko-KR")}</div>
+              <a class="link" href="${article.link}" target="_blank" rel="noreferrer">기사 열기</a>
+            </div>
+          </div>
+        `;
+        list.appendChild(el);
+      });
+
+      return articles;
+    }
+
+    function renderWarning(text = "") {
+      const warning = document.getElementById("warning");
+      if (!text) {
+        warning.style.display = "none";
+        warning.textContent = "";
+        return;
+      }
+
+      warning.style.display = "block";
+      warning.textContent = text;
+    }
+
+    function render() {
+      renderChips();
+      const articles = renderList();
+      document.getElementById("meta").textContent =
+        `최근 ${state.days}일 물 관련 기사 ${articles.length}건`;
+    }
+
+    async function searchNews() {
+      const button = document.getElementById("searchButton");
+      button.disabled = true;
+      button.textContent = "검색중";
+
+      renderWarning("");
+
+      state.query = document.getElementById("query").value;
+      state.days = Number(document.getElementById("days").value) || 7;
+      state.selectedCategory = "전체";
+
+      try {
+        const params = new URLSearchParams({
+          query: state.query,
+          days: String(state.days)
+        });
+
+        const response = await fetch(`/api/news?${params.toString()}`);
+        const data = await response.json();
+
+        if (!response.ok || !data.ok) {
+          throw new Error(data.message || "조회 실패");
+        }
+
+        state.articles = data.articles || [];
+        state.fetchedAt = data.fetchedAt;
+      } catch (error) {
+        state.articles = [];
+        state.fetchedAt = null;
+        renderWarning("뉴스를 가져오지 못했습니다. 잠시 후 다시 시도해 주세요.");
+      } finally {
+        render();
+        button.disabled = false;
+        button.textContent = "검색 버튼";
+      }
+    }
+
+    document.getElementById("searchButton").addEventListener("click", searchNews);
+
+    render();
+  </script>
+</body>
+</html>
